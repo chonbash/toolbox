@@ -1,9 +1,14 @@
 package ru.sbrf.oir.toolbox.toolbox;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -13,6 +18,27 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 
 public class WsdlCheckHelper {
+
+	public ArrayList<String> getWsdlListFromFile(String filePath) {
+		ArrayList<String> wsdlList = new ArrayList<String>();
+		File fin = new File(filePath);
+		BufferedReader br = new BufferedReader(new InputStreamReader(fin));
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			wsdlList.add(line);
+		}
+		return wsdlList;
+	}
+
+	public ArrayList<String> addHostPortToWsdlList(ArrayList<String> wsdlList,
+			String host, String port) {
+		for (String oldUrl : wsdlList) {
+			String newUrl = oldUrl.replaceFirst("host", host);
+			newUrl = newUrl.replaceFirst("port", port);
+			Collections.replaceAll(wsdlList,oldUrl,newUrl);
+		}
+		return wsdlList;
+	}
 
 	public static String getHttpsPageCode(String urlString) throws Exception {
 		URL url;
@@ -25,24 +51,27 @@ public class WsdlCheckHelper {
 			return "404";
 		}
 		if (url.getProtocol().contentEquals("http")) {
-			if (isHttpAvailable(url)) return "OK";
+			if (isHttpAvailable(url))
+				return "OK";
 		} else if (url.getProtocol().contentEquals("https")) {
-			if (isHttpsAvailable(url)) return "OK";
-		}  
+			if (isHttpsAvailable(url))
+				return "OK";
+		}
 		return "ERROR";
 	}
 
 	private static boolean isHttpsAvailable(URL url) throws Exception {
-		
-		SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
-        SSLContext.setDefault(ctx);
 
-		
+		SSLContext ctx = SSLContext.getInstance("TLS");
+		ctx.init(new KeyManager[0],
+				new TrustManager[] { new DefaultTrustManager() },
+				new SecureRandom());
+		SSLContext.setDefault(ctx);
+
 		HttpsURLConnection c = null;
 		try {
 			c = (HttpsURLConnection) url.openConnection();
-			c.setHostnameVerifier(new HostnameVerifier() {				
+			c.setHostnameVerifier(new HostnameVerifier() {
 				public boolean verify(String hostname, SSLSession session) {
 					return true;
 				}
@@ -73,5 +102,4 @@ public class WsdlCheckHelper {
 		}
 	}
 
-	
 }
