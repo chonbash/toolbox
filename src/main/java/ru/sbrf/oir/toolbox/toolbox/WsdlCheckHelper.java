@@ -2,6 +2,11 @@ package ru.sbrf.oir.toolbox.toolbox;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -19,10 +24,9 @@ import javax.net.ssl.TrustManager;
 
 public class WsdlCheckHelper {
 
-	public ArrayList<String> getWsdlListFromFile(String filePath) {
+	public ArrayList<String> getWsdlListFromFile(String filePath) throws IOException {
 		ArrayList<String> wsdlList = new ArrayList<String>();
-		File fin = new File(filePath);
-		BufferedReader br = new BufferedReader(new InputStreamReader(fin));
+		BufferedReader br = new BufferedReader(new FileReader(filePath));
 		String line = null;
 		while ((line = br.readLine()) != null) {
 			wsdlList.add(line);
