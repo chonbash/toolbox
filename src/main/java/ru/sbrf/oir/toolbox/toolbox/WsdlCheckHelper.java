@@ -31,6 +31,7 @@ public class WsdlCheckHelper {
 		while ((line = br.readLine()) != null) {
 			wsdlList.add(line);
 		}
+		br.close();
 		return wsdlList;
 	}
 
@@ -44,7 +45,7 @@ public class WsdlCheckHelper {
 		return wsdlList;
 	}
 
-	public static String getHttpsPageCode(String urlString) throws Exception {
+	public String getHttpsPageCode(String urlString) throws Exception {
 		URL url;
 		try {
 			url = new URL(urlString);
@@ -64,7 +65,7 @@ public class WsdlCheckHelper {
 		return "ERROR";
 	}
 
-	private static boolean isHttpsAvailable(URL url) throws Exception {
+	private boolean isHttpsAvailable(URL url) throws Exception {
 
 		SSLContext ctx = SSLContext.getInstance("TLS");
 		ctx.init(new KeyManager[0],
@@ -91,7 +92,7 @@ public class WsdlCheckHelper {
 		}
 	}
 
-	private static boolean isHttpAvailable(URL u) {
+	private boolean isHttpAvailable(URL u) {
 		HttpURLConnection c = null;
 		try {
 			c = (HttpURLConnection) u.openConnection();
