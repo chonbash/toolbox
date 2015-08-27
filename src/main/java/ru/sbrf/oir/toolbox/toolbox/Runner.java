@@ -2,7 +2,6 @@ package ru.sbrf.oir.toolbox.toolbox;
 
 import org.apache.commons.cli.*;
 
-
 public class Runner {
 
 	static Property prop = new Property();
@@ -17,10 +16,10 @@ public class Runner {
 		options.addOption("sdec", true, "source encoding");
 		options.addOption("tdec", true, "target encoding");
 		options.addOption("encl", false, "show encoding list");
-		
+
 		CommandLineParser parser = new GnuParser();
-		CommandLine cmd = parser.parse( options, args);
-		
+		CommandLine cmd = parser.parse(options, args);
+
 		if (cmd.hasOption("property")) {
 			prop = PropertyHelper.read(cmd.getOptionValue("property"));
 		} else {
@@ -28,6 +27,19 @@ public class Runner {
 		}
 		if (cmd.hasOption("checkWsdl")) {
 			new WsdlCherManager(prop);
+			return;
+		}
+		if (cmd.hasOption("decode")) {
+			String sdec = "";
+			String tdec = "";
+			if (cmd.hasOption("sdec")) {
+				sdec = cmd.getOptionValue("sdec");
+			}
+			if (cmd.hasOption("tdec")){
+				tdec = cmd.getOptionValue("tdec");
+			}
+			new DecodeManager(cmd.getOptionValue("message"),sdec,tdec);
+			return;
 		}
 	}
 
